@@ -6,6 +6,7 @@ import ejsMate from "ejs-mate";
 import { notFoundHandler } from "./middlewares/notFound.middleware.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import flash from "connect-flash";
 import { showFlash } from "./middlewares/flash.middleware.js";
 import User from "./models/user.model.js";
@@ -25,7 +26,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "../public")));
 
+const store = MongoStore.create({
+  mongoUrl: process.env.MONGODB_URI,
+  crypto : {
+    secret : "MySuperSecretCode"
+  },
+  touchAfter: 24*3600
+});
+
+store.on("error", () => {
+  console.log("Error in MONGO SESSION STORE", err);
+})
+
 const sessionOptions = {
+  store,
   secret: "MySuperSecretCode",
   resave: false,
   saveUninitialized: true,
