@@ -104,6 +104,22 @@ const updateListing = asyncHandler(async (req, res) => {
   return res.redirect(`/listings/${id}`);
 });
 
+const getListingsByCategory = asyncHandler(async (req, res) => {
+  const category = req.query.category?.trim();
+  if (!category) {
+    return res.redirect("/listings");
+  }
+  const allListings = await Listing.find({ category: category });
+
+  if (!allListings || !allListings.length) {
+    req.flash("error", "Listing not found!");
+    return res.redirect("/listings");
+  }
+
+  req.flash("success", `Search results for ${category}`);
+  res.render("templates/listings/index.ejs", { allListings });
+});
+
 const deleteListing = asyncHandler(async (req, res) => {
   const { id } = req.params;
   await Listing.findOneAndDelete({ _id: id });
@@ -118,5 +134,6 @@ export {
   showListing,
   editListing,
   updateListing,
+  getListingsByCategory,
   deleteListing,
 };

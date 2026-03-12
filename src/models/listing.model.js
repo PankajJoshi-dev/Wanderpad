@@ -12,6 +12,7 @@ const listingSchema = new Schema({
     },
     filename: String,
   },
+  category: String,
   price: Number,
   location: String,
   geometry: {

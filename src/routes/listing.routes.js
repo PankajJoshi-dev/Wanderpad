@@ -10,6 +10,7 @@ import {
   showListing,
   editListing,
   updateListing,
+  getListingsByCategory,
   deleteListing,
 } from "../controllers/listing.controllers.js";
 import multer from "multer";
@@ -34,6 +35,8 @@ listingRouter
 
 // Render Edit Form:
 listingRouter.route("/:id/edit").get(isLoggedIn, listingOwner, editListing);
+
+listingRouter.route("/category").get(getListingsByCategory);
 
 // Show, Update and Destroy Route
 listingRouter

@@ -24,12 +24,36 @@ main {
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--bs-body-bg);
     z-index: 1050;
     padding: 1rem;
   }
 }
 
+.search-input {
+    font-size: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+        width: 18rem !important;
+    border-radius: 25px !important;
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        width: 100% !important;
+    }
+}
+
+.btn-search:hover {
+    background-color: #ffff !important;
+    color: black !important;
+}
+
+.btn-search {
+    display: inline-block;
+    background-color: #fe424d !important;
+    color: white !important;
+    padding: 0 1rem 0 1rem !important;
+    border-radius: 25px !important;
+}
 
 .fa-hotel {
     color: #fe424d;

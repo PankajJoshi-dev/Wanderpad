@@ -22,6 +22,14 @@
         <a class="nav-link" href="/listings">All Listings</a>
         <a class="nav-link" href="/listings/new">Add New Listing</a>
       </div>
+
+      <div class="navbar-nav nav-center">
+        <form class="d-flex" role="search" id="searchbar" action="/listings/category">
+          <input class="form-control search-input me-3 text-center" type="search" placeholder="Search Categories" name="category"/>
+          <button class="btn btn-search" type="submit">Search</button>
+        </form>
+      </div>
+
       <div class="navbar-nav nav-right">
         <% if(!currUser) { %>
         <a class="nav-link" aria-current="page" href="/signup">Signup</a>
