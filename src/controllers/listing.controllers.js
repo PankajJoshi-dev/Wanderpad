@@ -106,7 +106,7 @@ const updateListing = asyncHandler(async (req, res) => {
 });
 
 const search = asyncHandler(async (req, res) => {
-  const category = req.query.category?.trim();
+  const category = req.query.category?.trim().toLowerCase();
   const location = req.query.location?.trim();
 
   console.log(`Category: ${category}`)
