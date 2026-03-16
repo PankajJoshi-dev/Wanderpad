@@ -161,16 +161,19 @@ main {
     border: none !important;
 }
 
-.show-img{
-    height: 30vw;
-}
-
 .show-card {
     padding: 0;
 }
 
-.show-card:hover{
+.show-card:hover {
     transform: scale(1) !important;
+}
+
+.image-preview {
+    object-fit: cover;
+    border-radius: 1rem;
+    height: 20vh;
+    overflow: hidden;
 }
 
 .alert {

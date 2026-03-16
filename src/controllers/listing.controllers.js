@@ -70,7 +70,7 @@ const editListing = asyncHandler(async (req, res) => {
 
 const updateListing = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { title, description, price, location, country } = req.body;
+  const { title, description, price, category, location, country } = req.body;
   const updates = {};
   const geometry = await geocode(req.body.location);
 
@@ -86,6 +86,7 @@ const updateListing = asyncHandler(async (req, res) => {
   if (title) updates.title = title;
   if (description) updates.description = description;
   if (price) updates.price = price;
+  if (price) updates.category = category;
   if (location) updates.location = location;
   if (country) updates.country = country;
   if (geometry) updates.geometry = geometry;
@@ -107,7 +108,16 @@ const updateListing = asyncHandler(async (req, res) => {
 const search = asyncHandler(async (req, res) => {
   const category = req.query.category?.trim();
   const location = req.query.location?.trim();
+
+  console.log(`Category: ${category}`)
+  console.log(`location: ${location}`)
+
   if ((!category) && (!location)) {
+    return res.redirect("/listings");
+  }
+
+  if((!category) && (!location)){
+    req.flash("error", `Please provide a valid filter`);
     return res.redirect("/listings");
   }
 
@@ -120,7 +130,7 @@ const search = asyncHandler(async (req, res) => {
   }
   
   if (!allListings || !allListings.length) {
-    req.flash("error", `No search results for ${location}`);
+    req.flash("error", `No listings found matching your search.`);
     return res.redirect("/listings");
   }
 
