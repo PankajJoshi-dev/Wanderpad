@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { joiUserSchema } from "../validations/validator.js";
+import { joiUserSchema, joiLoginSchema } from "../validations/validator.js";
 import { validate } from "../middlewares/validate.js";
 import passport from "passport";
 import { saveRedirectUrl } from "../middlewares/auth.middlewares.js";
@@ -25,6 +25,7 @@ userRouter
   .get(renderLoginForm)
   .post(
     saveRedirectUrl,
+    validate(joiLoginSchema, "body"),
     passport.authenticate("local", {
       failureRedirect: "/login",
       failureFlash: true,
