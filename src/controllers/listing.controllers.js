@@ -23,10 +23,11 @@ const createListing = asyncHandler(async (req, res) => {
   newListing.owner = req.user._id;
   newListing.geometry = geometry;
 
-  newListing.save().then((data) => {
-    req.flash("success", "Listing created successfully!");
-    return res.redirect("/listings");
-  });
+  await newListing.save();
+
+  req.flash("success", "Listing created successfully!");
+  return res.redirect("/listings");
+
 });
 
 const listingIndex = asyncHandler(async (req, res) => {
@@ -86,19 +87,18 @@ const updateListing = asyncHandler(async (req, res) => {
   if (title) updates.title = title;
   if (description) updates.description = description;
   if (price) updates.price = price;
-  if (price) updates.category = category;
+  if (category) updates.category = category;
   if (location) updates.location = location;
   if (country) updates.country = country;
   if (geometry) updates.geometry = geometry;
 
-  const updatedListing = await Listing.findByIdAndUpdate(
+  await Listing.findByIdAndUpdate(
     id,
     {
       $set: updates,
     },
     {
       runValidators: true,
-      new: true,
     },
   );
   req.flash("success", "Listing updated successfully!");
@@ -106,41 +106,31 @@ const updateListing = asyncHandler(async (req, res) => {
 });
 
 const search = asyncHandler(async (req, res) => {
-  const category = req.query.category?.trim().toLowerCase();
-  const location = req.query.location?.trim();
+  const { category, location } = req.query;
 
-  console.log(`Category: ${category}`)
-  console.log(`location: ${location}`)
-
-  if ((!category) && (!location)) {
-    return res.redirect("/listings");
+  if (!category && !location) {
+    res.locals.error = ["Please enter a category or location to search."];
+    return res.render("templates/listings/index.ejs", { allListings: [] });
   }
 
-  if((!category) && (!location)){
-    req.flash("error", `Please provide a valid filter`);
-    return res.redirect("/listings");
+  const query = {};
+  if (location) query.location = location.trim().toLowerCase();
+  if (category) query.category = category.trim().toLowerCase();
+
+  const allListings = await Listing.find(query);
+
+  if (!allListings.length) {
+    res.locals.error = ["No listings found matching your search."];
+    return res.render("templates/listings/index.ejs", { allListings: [] });
   }
 
-  let allListings = [];
-  if(!category && location) { 
-    allListings = await Listing.find({ location: location });
-  }
-  else if(!location && category) {
-    allListings = await Listing.find({ category: category });
-  }
-  
-  if (!allListings || !allListings.length) {
-    req.flash("error", `No listings found matching your search.`);
-    return res.redirect("/listings");
-  }
-
-  req.flash("success", `Search results for ${category}`);
-  res.render("templates/listings/index.ejs", { allListings });
+  res.locals.success = [`${allListings.length}  results found.`];
+  return res.render("templates/listings/index.ejs", { allListings });
 });
 
 const deleteListing = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  await Listing.findOneAndDelete({ _id: id });
+  await Listing.findByIdAndDelete(id);
   req.flash("success", "Listing deleted successfully!");
   return res.redirect("/listings");
 });
